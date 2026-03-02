@@ -1,0 +1,27 @@
+version: "2"
+run:
+  timeout: 5m
+  tests: true
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - gosec
+    - revive
+    - bodyclose
+    - contextcheck
+    - misspell
+    - prealloc
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - gofumpt
+  settings:
+    gofumpt:
+      extra-rules: true

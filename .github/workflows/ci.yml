@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.x'
+      - name: Install tools
+        run: make tools
+      - name: Validate compose
+        run: make compose-validate
+      - name: Generate sqlc
+        run: make sqlc-generate
+      - name: Ensure generated code clean
+        run: git diff --exit-code
+      - name: Lint
+        run: make lint
+      - name: Unit tests
+        run: make test
+      - name: Race tests
+        run: make race

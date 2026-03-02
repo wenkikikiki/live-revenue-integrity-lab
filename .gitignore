@@ -1,0 +1,7 @@
+/bin/
+/dist/
+/tmp/
+.coverprofile
+*.log
+.env
+.DS_Store
