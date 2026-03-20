@@ -3,10 +3,10 @@ global:
 scrape_configs:
   - job_name: api
     static_configs:
-      - targets: ["host.docker.internal:8080"]
+      - targets: ["api:8080"]
   - job_name: leaderboard_projector
     static_configs:
-      - targets: ["host.docker.internal:9101"]
+      - targets: ["leaderboard-projector:9101"]
   - job_name: points_projector
     static_configs:
-      - targets: ["host.docker.internal:9102"]
+      - targets: ["points-projector:9102"]

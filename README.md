@@ -15,33 +15,40 @@ Correctness-first Go monorepo for LIVE gifting revenue integrity during PK match
 
 ## Quick start
 
-### 1. Install tooling
+### 1. Start the Dockerized stack
 
-```bash
-make tools
-```
-
-### 2. Start infra + migrate DB
+`make up` builds the app image inside Docker from the vendored Go dependencies, then starts the stack.
 
 ```bash
 make up
-make goose-up
 ```
 
-### 3. Run binaries (separate terminals)
+The core services stay inside Docker. Only the API is published to the host by default on `127.0.0.1:8080`.
 
 ```bash
-go run ./cmd/api
-go run ./cmd/outbox-relay
-go run ./cmd/leaderboard-projector
-go run ./cmd/points-projector
-go run ./cmd/settlement-worker
+curl -sS http://127.0.0.1:8080/healthz
 ```
 
-### 4. One-command demo
+### 2. Optional dashboards
+
+```bash
+make up-observability
+```
+
+This publishes Prometheus on `127.0.0.1:9090` and Grafana on `127.0.0.1:3000`.
+
+### 3. Reset demo state between runs
+
+```bash
+make demo-reset
+```
+
+### 4. One-command demos
 
 ```bash
 make demo
+make demo-hard-idempotency
+make demo-hard-recovery
 ```
 
 ## Verification commands
@@ -86,3 +93,4 @@ make k6-benchmark
 - [Benchmark report](docs/benchmark-report.md)
 - [Replay/duplicate postmortem](docs/postmortem-replay-duplicate.md)
 - [API walkthrough](docs/api-walkthrough.md)
+- [Internal demo cheat sheet](docs/internal/instructions.md)

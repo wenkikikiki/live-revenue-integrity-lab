@@ -4,6 +4,7 @@ GO ?= go
 GOOSE ?= goose
 SQLC ?= sqlc
 GOLANGCI_LINT ?= golangci-lint
+DOCKER_COMPOSE ?= docker compose
 DB_DSN ?= root:root@tcp(localhost:3306)/live_revenue?parseTime=true&multiStatements=true
 
 .PHONY: tools
@@ -14,15 +15,24 @@ tools:
 
 .PHONY: compose-validate
 compose-validate:
-	docker compose config -q
+	$(DOCKER_COMPOSE) config -q
 
 .PHONY: up
 up:
-	docker compose up -d mysql redis kafka prometheus grafana
+	bash scripts/up_stack.sh
+
+.PHONY: up-observability
+up-observability:
+	bash scripts/up_observability.sh
 
 .PHONY: down
 down:
-	docker compose down -v
+	$(DOCKER_COMPOSE) down --remove-orphans
+
+.PHONY: clean
+clean:
+	$(DOCKER_COMPOSE) down -v --remove-orphans
+	rm -rf .docker-data/mysql .docker-data/kafka
 
 .PHONY: sqlc-generate
 sqlc-generate:
@@ -63,3 +73,15 @@ k6-benchmark:
 .PHONY: demo
 demo:
 	bash scripts/demo.sh
+
+.PHONY: demo-reset
+demo-reset:
+	bash scripts/reset_demo_state.sh
+
+.PHONY: demo-hard-idempotency
+demo-hard-idempotency:
+	bash scripts/demo_idempotency.sh
+
+.PHONY: demo-hard-recovery
+demo-hard-recovery:
+	bash scripts/demo_recovery.sh
